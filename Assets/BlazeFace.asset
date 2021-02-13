@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28ff768ae2bdb944faf7c39a07a88d34, type: 3}
+  m_Name: BlazeFace
+  m_EditorClassIdentifier: 
+  model: {fileID: 5022602860645237092, guid: 8ec4562ccd3f9b04ba066a7389137d63, type: 3}
+  preprocess: {fileID: 7200000, guid: fa137fb6f2fc6f246be52153c4df0999, type: 3}
+  postprocess: {fileID: 0}
