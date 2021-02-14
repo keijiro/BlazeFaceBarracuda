@@ -9,6 +9,7 @@ sealed class WebcamTest : MonoBehaviour
 
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI = null;
+    [SerializeField] UI.RawImage _overlayUI = null;
 
     #endregion
 
@@ -34,6 +35,8 @@ sealed class WebcamTest : MonoBehaviour
 
         // Face detector initialization
         _detector = new FaceDetector(_resources);
+
+        _overlayUI.texture = _detector.PreviewRT;
     }
 
     void OnDisable()

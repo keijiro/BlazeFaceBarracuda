@@ -1,0 +1,36 @@
+#pragma kernel Postprocess
+
+Texture2D<float> _Scores1;
+Texture2D<float> _Scores2;
+Texture2D<float> _Boxes1;
+Texture2D<float> _Boxes2;
+
+RWTexture2D<float4> _Output;
+
+float Sigmoid(float x)
+{
+    return 1 / (1 + exp(-x));
+}
+
+[numthreads(16, 16, 1)]
+void Postprocess(uint3 id : SV_DispatchThreadID)
+{
+    float score = 0;
+
+    for (uint aidx = 0; aidx < 2; aidx++)
+    {
+        uint2 tc = uint2((id.y * 16 + id.x) * 2 + aidx, 0);
+        score += Sigmoid(_Scores1[tc]);
+    }
+
+    if (all(id.xy < 8))
+    {
+        for (aidx = 0; aidx < 6; aidx++)
+        {
+            uint2 tc = uint2((id.y * 8 + id.x) * 6 + aidx, 0);
+            score += Sigmoid(_Scores2[tc]);
+        }
+    }
+
+    _Output[id.xy] = float4(score, score, score, 1);
+}
