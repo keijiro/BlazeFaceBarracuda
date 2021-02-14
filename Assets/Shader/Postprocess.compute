@@ -1,36 +1,61 @@
 #pragma kernel Postprocess
 
+#include "Common.hlsl"
+
+// Input uniforms
 Texture2D<float> _Scores1;
 Texture2D<float> _Scores2;
 Texture2D<float> _Boxes1;
 Texture2D<float> _Boxes2;
 
-RWTexture2D<float4> _Output;
-
-float Sigmoid(float x)
-{
-    return 1 / (1 + exp(-x));
-}
+// Output uniforms
+AppendStructuredBuffer<BoundingBox> _Output;
 
 [numthreads(16, 16, 1)]
 void Postprocess(uint3 id : SV_DispatchThreadID)
 {
-    float score = 0;
-
     for (uint aidx = 0; aidx < 2; aidx++)
     {
-        uint2 tc = uint2((id.y * 16 + id.x) * 2 + aidx, 0);
-        score += Sigmoid(_Scores1[tc]);
+        uint offs = (id.y * 16 + id.x) * 2 + aidx;
+
+        float x = _Boxes1[uint2(0, offs)];
+        float y = _Boxes1[uint2(1, offs)];
+        float w = _Boxes1[uint2(2, offs)];
+        float h = _Boxes1[uint2(3, offs)];
+        float s = _Scores1[uint2(offs, 0)];
+
+        BoundingBox box;
+        box.x = (x + id.x * 8 + 4) / 128;
+        box.y = (y + id.y * 8 + 4) / 128;
+        box.w = w / 128;
+        box.h = h / 128;
+        box.score = Sigmoid(s);
+        box.pad = 0;
+
+        _Output.Append(box);
     }
 
     if (all(id.xy < 8))
     {
         for (aidx = 0; aidx < 6; aidx++)
         {
-            uint2 tc = uint2((id.y * 8 + id.x) * 6 + aidx, 0);
-            score += Sigmoid(_Scores2[tc]);
+            uint offs = (id.y * 8 + id.x) * 6 + aidx;
+
+            float x = _Boxes2[uint2(0, offs)];
+            float y = _Boxes2[uint2(1, offs)];
+            float w = _Boxes2[uint2(2, offs)];
+            float h = _Boxes2[uint2(3, offs)];
+            float s = _Scores2[uint2(offs, 0)];
+
+            BoundingBox box;
+            box.x = (x + id.x * 16 + 8) / 128;
+            box.y = (y + id.y * 16 + 8) / 128;
+            box.w = w / 128;
+            box.h = h / 128;
+            box.score = Sigmoid(s);
+            box.pad = 0;
+
+            _Output.Append(box);
         }
     }
-
-    _Output[id.xy] = float4(score, score, score, 1);
 }

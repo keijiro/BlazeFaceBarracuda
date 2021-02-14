@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ff768ae2bdb944faf7c39a07a88d34, type: 3}
   m_Name: BlazeFace
   m_EditorClassIdentifier: 
-  model: {fileID: 5022602860645237092, guid: d0bd3a86b69f3ec418b1bb6a5a22a95e, type: 3}
+  model: {fileID: 5022602860645237092, guid: 5e2590ff19570304da8435eb52062b15, type: 3}
   preprocess: {fileID: 7200000, guid: fa137fb6f2fc6f246be52153c4df0999, type: 3}
   postprocess: {fileID: 7200000, guid: 38eca6a333e35c643a4f8bf8ec95be38, type: 3}

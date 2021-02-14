@@ -10,8 +10,8 @@ public sealed class FaceDetector : System.IDisposable
 
     ResourceSet _resources;
     ComputeBuffer _preBuffer;
+    ComputeBuffer _postBuffer;
     IWorker _worker;
-    RenderTexture _preview;
 
     #endregion
 
@@ -20,12 +20,13 @@ public sealed class FaceDetector : System.IDisposable
     public FaceDetector(ResourceSet resources)
     {
         _resources = resources;
-        _preBuffer = new ComputeBuffer(Config.InputSize, sizeof(float));
-        _worker = ModelLoader.Load(_resources.model).CreateWorker();
 
-        _preview = new RenderTexture(16, 16, 0);
-        _preview.enableRandomWrite = true;
-        _preview.Create();
+        _preBuffer = new ComputeBuffer(Config.InputSize, sizeof(float));
+
+        _postBuffer = new ComputeBuffer
+          (Config.MaxDetection, BoundingBox.Size, ComputeBufferType.Append);
+
+        _worker = ModelLoader.Load(_resources.model).CreateWorker();
     }
 
     #endregion
@@ -37,18 +38,22 @@ public sealed class FaceDetector : System.IDisposable
         _preBuffer?.Dispose();
         _preBuffer = null;
 
+        _postBuffer?.Dispose();
+        _postBuffer = null;
+
         _worker?.Dispose();
         _worker = null;
-
-        Object.Destroy(_preview);
-        _preview = null;
     }
 
     #endregion
 
     #region Public accessors
 
-    public RenderTexture PreviewRT => _preview;
+    public ComputeBuffer BoundingBoxBuffer
+      => _postBuffer;
+
+    public void SetIndirectDrawCount(ComputeBuffer drawArgs)
+      => ComputeBuffer.CopyCount(_postBuffer, drawArgs, sizeof(uint));
 
     #endregion
 
@@ -56,6 +61,9 @@ public sealed class FaceDetector : System.IDisposable
 
     public void ProcessImage(Texture sourceTexture)
     {
+        // Reset the compute buffer counters.
+        _postBuffer.SetCounterValue(0);
+
         // Preprocessing
         var pre = _resources.preprocess;
         var imageSize = Config.ImageSize;
@@ -89,7 +97,7 @@ public sealed class FaceDetector : System.IDisposable
         post.SetTexture(0, "_Scores2", rt2);
         post.SetTexture(0, "_Boxes1", rt3);
         post.SetTexture(0, "_Boxes2", rt4);
-        post.SetTexture(0, "_Output", _preview);
+        post.SetBuffer(0, "_Output", _postBuffer);
         post.Dispatch(0, 1, 1, 1);
 
         RenderTexture.ReleaseTemporary(rt1);
