@@ -57,7 +57,7 @@ public sealed class InferenceTest : MonoBehaviour
                     alpha += 1 / (1 + Mathf.Exp(-s));
                 }
 
-                layer1.SetPixel(x, y, new Color(1, 0, 0, alpha));
+                layer1.SetPixel(x, 15 - y, new Color(1, 0, 0, alpha));
             }
         }
 
@@ -82,7 +82,7 @@ public sealed class InferenceTest : MonoBehaviour
                     alpha += 1 / (1 + Mathf.Exp(-s));
                 }
 
-                layer2.SetPixel(x, y, new Color(0, 0, 1, alpha));
+                layer2.SetPixel(x, 7 - y, new Color(0, 0, 1, alpha));
             }
         }
 

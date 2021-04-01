@@ -342,7 +342,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _workerType: 32768
-  _model: {fileID: 5022602860645237092, guid: 6a5a349be71fc2a4c9389a2fb7f6aaf5, type: 3}
+  _model: {fileID: 5022602860645237092, guid: b864a3b8f6ec93147ade176d904e1163, type: 3}
   _image: {fileID: 2800000, guid: 6e4df74f29d97de4fb4903861ec3c293, type: 3}
   _uiSource: {fileID: 1337112555}
   _uiLayer1: {fileID: 1429957495}
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -513,7 +513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
