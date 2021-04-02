@@ -66,10 +66,10 @@ public sealed class StaticImageTest : MonoBehaviour
                     var sw = tensor2[0, 0, i, 2] / size;
                     var sh = tensor2[0, 0, i, 3] / size;
 
-                    var box = new BoundingBox(sx, sy, sw, sh);
+                    var box = new BoundingBox(sx, sy, sw, sh, s);
 
                     var marker = Instantiate(_markerPrefab, _previewUI.transform);
-                    marker.SetAttributes(box, s);
+                    marker.SetAttributes(box);
                 }
             }
         }
@@ -98,10 +98,10 @@ public sealed class StaticImageTest : MonoBehaviour
                     var sw = tensor4[0, 0, i, 2] / size;
                     var sh = tensor4[0, 0, i, 3] / size;
 
-                    var box = new BoundingBox(sx, sy, sw, sh);
+                    var box = new BoundingBox(sx, sy, sw, sh, s);
 
                     var marker = Instantiate(_markerPrefab, _previewUI.transform);
-                    marker.SetAttributes(box, s);
+                    marker.SetAttributes(box);
                 }
             }
         }

@@ -18,7 +18,7 @@ sealed class Marker : MonoBehaviour
         _label = GetComponentInChildren<UI.Text>();
     }
 
-    public void SetAttributes(in BoundingBox box, float score)
+    public void SetAttributes(in BoundingBox box)
     {
         if (_xform == null) Start();
 
@@ -35,7 +35,7 @@ sealed class Marker : MonoBehaviour
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
 
         // Label (class name + score)
-        _label.text = $"{(int)(score * 100)}%";
+        _label.text = $"{(int)(box.score * 100)}%";
 
         // Panel color
         _panel.color = new Color(1, 0, 0, 0.5f);

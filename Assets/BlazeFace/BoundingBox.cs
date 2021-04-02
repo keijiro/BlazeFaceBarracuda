@@ -16,8 +16,13 @@ public readonly struct BoundingBox
     public readonly float key3x, key3y;
     public readonly float key4x, key4y;
     public readonly float key5x, key5y;
+    public readonly float score;
+    public readonly float pad1, pad2, pad3;
 
-    public BoundingBox(float x, float y, float w, float h)
+    // sizeof(BoundingBox)
+    public static int Size = 24 * sizeof(float);
+
+    public BoundingBox(float x, float y, float w, float h, float s)
     {
         this.x = x;
         this.y = y;
@@ -29,6 +34,8 @@ public readonly struct BoundingBox
         key3x = key3y = 0;
         key4x = key4y = 0;
         key5x = key5y = 0;
+        score = s;
+        pad1 = pad2 = pad3 = 0;
     }
 };
 
