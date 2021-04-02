@@ -4,7 +4,7 @@ using Unity.Barracuda;
 
 namespace BlazeFace {
 
-public sealed class InferenceTest : MonoBehaviour
+public sealed class StaticImageTest : MonoBehaviour
 {
     [SerializeField] Texture2D _image;
     [SerializeField, Range(0, 1)] float _scoreThreshold = 0.1f;
