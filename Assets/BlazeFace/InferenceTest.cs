@@ -16,16 +16,20 @@ public sealed class InferenceTest : MonoBehaviour
     {
         _previewUI.texture = _image;
 
-        // Input image -> Tensor (1, 128, 128, 3)
-        var source = new float[128 * 128 * 3];
+        // Model loading
+        var model = ModelLoader.Load(_model);
+        var size = model.inputs[0].shape[6];
 
-        for (var y = 0; y < 128; y++)
+        // Input image -> Tensor (1, size, size, 3)
+        var source = new float[size * size * 3];
+
+        for (var y = 0; y < size; y++)
         {
-            for (var x = 0; x < 128; x++)
+            for (var x = 0; x < size; x++)
             {
-                var i = ((127 - y) * 128 + x) * 3;
-                var sx = x * _image.width / 128;
-                var sy = y * _image.height / 128;
+                var i = ((size - 1 - y) * size + x) * 3;
+                var sx = x * _image.width  / size;
+                var sy = y * _image.height / size;
                 var p = _image.GetPixel(sx, sy);
                 source[i + 0] = p.r * 2 - 1;
                 source[i + 1] = p.g * 2 - 1;
@@ -34,9 +38,8 @@ public sealed class InferenceTest : MonoBehaviour
         }
 
         // Inference
-        var model = ModelLoader.Load(_model);
         using var worker = WorkerFactory.CreateWorker(model);
-        using (var tensor = new Tensor(1, 128, 128, 3, source))
+        using (var tensor = new Tensor(1, size, size, 3, source))
             worker.Execute(tensor);
 
         // 16x16 feature map
@@ -57,11 +60,11 @@ public sealed class InferenceTest : MonoBehaviour
                     var sx = (x + 0.5f) / 16;
                     var sy = (y + 0.5f) / 16;
 
-                    sx += tensor2[0, 0, i, 0] / 128;
-                    sy += tensor2[0, 0, i, 1] / 128;
+                    sx += tensor2[0, 0, i, 0] / size;
+                    sy += tensor2[0, 0, i, 1] / size;
 
-                    var sw = tensor2[0, 0, i, 2] / 128;
-                    var sh = tensor2[0, 0, i, 3] / 128;
+                    var sw = tensor2[0, 0, i, 2] / size;
+                    var sh = tensor2[0, 0, i, 3] / size;
 
                     var box = new BoundingBox(sx, sy, sw, sh);
 
@@ -89,11 +92,11 @@ public sealed class InferenceTest : MonoBehaviour
                     var sx = (x + 0.5f) / 8;
                     var sy = (y + 0.5f) / 8;
 
-                    sx += tensor4[0, 0, i, 0] / 128;
-                    sy += tensor4[0, 0, i, 1] / 128;
+                    sx += tensor4[0, 0, i, 0] / size;
+                    sy += tensor4[0, 0, i, 1] / size;
 
-                    var sw = tensor4[0, 0, i, 2] / 128 / 2;
-                    var sh = tensor4[0, 0, i, 3] / 128 / 2;
+                    var sw = tensor4[0, 0, i, 2] / size;
+                    var sh = tensor4[0, 0, i, 3] / size;
 
                     var box = new BoundingBox(sx, sy, sw, sh);
 
