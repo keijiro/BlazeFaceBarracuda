@@ -340,10 +340,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 2800000, guid: 81031357d7ecd6b439921f3d537988ea, type: 3}
-  _scoreThreshold: 0.85
+  _scoreThreshold: 0.501
+  _overlapThreshold: 0.5
+  _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _previewUI: {fileID: 1337112555}
   _markerPrefab: {fileID: 3699856667202305132, guid: 47a0fcd207399f14b8f37638653245e1, type: 3}
-  _model: {fileID: 5022602860645237092, guid: b864a3b8f6ec93147ade176d904e1163, type: 3}
 --- !u!4 &1398950589
 Transform:
   m_ObjectHideFlags: 0

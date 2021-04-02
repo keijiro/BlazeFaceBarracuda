@@ -1,0 +1,31 @@
+#pragma kernel Postprocess1Layer1
+#pragma kernel Postprocess1Layer2
+
+// 
+// 1st postprocessor (bounding box aggregation)
+//
+
+#include "Common.hlsl"
+
+// Input uniforms
+Texture2D _Scores;
+Texture2D _Boxes;
+float _ImageSize;
+float _Threshold;
+
+// Output uniforms
+AppendStructuredBuffer<BoundingBox> _Output;
+
+#define CELLS_IN_ROW 16
+#define ANCHOR_COUNT 2
+#define KERNEL_NAME Postprocess1Layer1
+#include "Postprocess1Kernel.hlsl"
+
+#undef CELLS_IN_ROW
+#undef ANCHOR_COUNT
+#undef KERNEL_NAME
+
+#define CELLS_IN_ROW 8
+#define ANCHOR_COUNT 6
+#define KERNEL_NAME Postprocess1Layer2
+#include "Postprocess1Kernel.hlsl"

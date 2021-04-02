@@ -20,7 +20,7 @@ public readonly struct BoundingBox
     public readonly float pad1, pad2, pad3;
 
     // sizeof(BoundingBox)
-    public static int Size = 24 * sizeof(float);
+    public static int Size = 20 * sizeof(float);
 
     public BoundingBox(float x, float y, float w, float h, float s)
     {
