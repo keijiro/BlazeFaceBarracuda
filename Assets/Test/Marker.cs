@@ -3,28 +3,25 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
-sealed class Marker : MonoBehaviour
+public sealed class Marker : MonoBehaviour
 {
-    RectTransform _parent;
     RectTransform _xform;
+    RectTransform _parent;
     UI.Image _panel;
     UI.Text _label;
 
-    void Start()
-    {
-        _xform = GetComponent<RectTransform>();
-        _parent = (RectTransform)_xform.parent;
-        _panel = GetComponent<UI.Image>();
-        _label = GetComponentInChildren<UI.Text>();
-    }
-
     public void SetAttributes(in BoundingBox box)
     {
-        if (_xform == null) Start();
-
-        var rect = _parent.rect;
+        if (_xform == null)
+        {
+            _xform = GetComponent<RectTransform>();
+            _parent = (RectTransform)_xform.parent;
+            _panel = GetComponent<UI.Image>();
+            _label = GetComponentInChildren<UI.Text>();
+        }
 
         // Bounding box position
+        var rect = _parent.rect;
         var x = box.x * rect.width;
         var y = (1 - box.y) * rect.height;
         var w = box.w * rect.width;
@@ -34,7 +31,7 @@ sealed class Marker : MonoBehaviour
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
 
-        // Label (class name + score)
+        // Label
         _label.text = $"{(int)(box.score * 100)}%";
 
         // Panel color

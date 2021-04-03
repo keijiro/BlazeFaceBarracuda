@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 2800000, guid: 81031357d7ecd6b439921f3d537988ea, type: 3}
-  _scoreThreshold: 0.501
+  _scoreThreshold: 0.7
   _overlapThreshold: 0.5
   _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _previewUI: {fileID: 1337112555}
