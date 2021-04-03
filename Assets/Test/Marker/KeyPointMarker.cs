@@ -3,7 +3,7 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
-public sealed class Marker : MonoBehaviour
+public sealed class KeyPointMarker : MarkerBase
 {
     #region Object reference cache
 
@@ -31,7 +31,7 @@ public sealed class Marker : MonoBehaviour
 
     #region Public methods
 
-    public void SetAttributes(in BoundingBox box)
+    public override void SetAttributes(in BoundingBox box)
     {
         if (_xform == null)
         {
@@ -70,7 +70,7 @@ public sealed class Marker : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void Hide()
+    public override void Hide()
       => gameObject.SetActive(false);
 
     #endregion

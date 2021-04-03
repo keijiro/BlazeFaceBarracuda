@@ -12,7 +12,7 @@ public sealed class StaticImageTest : MonoBehaviour
     [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI;
-    [SerializeField] Marker _markerPrefab = null;
+    [SerializeField] MarkerBase _markerPrefab = null;
 
     #endregion
 

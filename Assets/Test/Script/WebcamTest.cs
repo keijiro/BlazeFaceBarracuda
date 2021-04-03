@@ -12,14 +12,14 @@ public sealed class WebcamTest : MonoBehaviour
     [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI = null;
-    [SerializeField] Marker _markerPrefab = null;
+    [SerializeField] MarkerBase _markerPrefab = null;
 
     #endregion
 
     #region Internal objects
 
     FaceDetector _detector;
-    Marker[] _markers = new Marker[50];
+    MarkerBase[] _markers = new MarkerBase[50];
 
     #endregion
 
