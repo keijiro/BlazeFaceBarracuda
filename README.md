@@ -22,16 +22,16 @@ Please refer to [his model zoo] for more information.
 [his model zoo]: https://github.com/PINTO0309/PINTO_model_zoo
 
 I (keijiro) converted his ONNX model into a Barracuda-compatible form. Please
-check the following [Colab notebook] for the details of the convertion process.
+check [this Colab notebook] for the details of the convertion process.
 
-[Colab notebook]:
+[this Colab notebook]:
   https://colab.research.google.com/drive/1O1KDIVsmYyYDqEqv7hEqofsHMCa49xaZ?usp=sharing
 
 Acknowledgements
 ----------------
 
-This repository contains some stock photos from [Pexels]. [1][Test1],
-[2][Test2], [3][Test3].
+This repository contains some stock photos from [Pexels]. [[1]][Test1],
+[[2]][Test2], [[3]][Test3]
 
 [Pexels]: https://www.pexels.com/
 [Test1]: https://www.pexels.com/photo/serious-young-black-man-browsing-smartphone-on-street-6140931/
