@@ -8,8 +8,8 @@
 #include "Common.hlsl"
 
 // Input uniforms
-Texture2D _Scores;
-Texture2D _Boxes;
+Texture2D<float> _Scores;
+Texture2D<float> _Boxes;
 float _ImageSize;
 float _Threshold;
 
