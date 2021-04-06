@@ -3,10 +3,17 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
-public sealed class KeyPointMarker : MarkerBase
+public sealed class KeyPointsUpdater : MonoBehaviour
 {
+    #region Editable attributes
+
+    [SerializeField] RectTransform[] _keyPoints;
+
+    #endregion
+
     #region Object reference cache
 
+    Marker _marker;
     RectTransform _xform;
     RectTransform _parent;
     UI.Image _panel;
@@ -14,9 +21,7 @@ public sealed class KeyPointMarker : MarkerBase
 
     #endregion
 
-    #region Key point operations
-
-    [SerializeField] RectTransform[] _keyPoints;
+    #region Private methods
 
     void SetKeyPoint(RectTransform xform, Vector2 point)
     {
@@ -29,17 +34,20 @@ public sealed class KeyPointMarker : MarkerBase
 
     #endregion
 
-    #region MarkerBase implementation
+    #region MonoBehaviour implementation
 
-    public override void SetDetection(in Detection detection)
+    void Start()
     {
-        if (_xform == null)
-        {
-            _xform = GetComponent<RectTransform>();
-            _parent = (RectTransform)_xform.parent;
-            _panel = GetComponent<UI.Image>();
-            _label = GetComponentInChildren<UI.Text>();
-        }
+        _marker = GetComponent<Marker>();
+        _xform = GetComponent<RectTransform>();
+        _parent = (RectTransform)_xform.parent;
+        _panel = GetComponent<UI.Image>();
+        _label = GetComponentInChildren<UI.Text>();
+    }
+
+    void LateUpdate()
+    {
+        var detection = _marker.detection;
 
         // Bounding box position
         var rect = _parent.rect;
@@ -65,13 +73,7 @@ public sealed class KeyPointMarker : MarkerBase
         SetKeyPoint(_keyPoints[3], detection.mouth);
         SetKeyPoint(_keyPoints[4], detection.rightEar);
         SetKeyPoint(_keyPoints[5], detection.leftEar);
-
-        // Enable
-        gameObject.SetActive(true);
     }
-
-    public override void Hide()
-      => gameObject.SetActive(false);
 
     #endregion
 }

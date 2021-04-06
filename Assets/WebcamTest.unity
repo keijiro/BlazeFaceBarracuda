@@ -345,7 +345,7 @@ MonoBehaviour:
   _overlapThreshold: 0.5
   _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _previewUI: {fileID: 1337112555}
-  _markerPrefab: {fileID: 3699856667202305132, guid: 47a0fcd207399f14b8f37638653245e1, type: 3}
+  _markerPrefab: {fileID: 8350498522753284527, guid: 47a0fcd207399f14b8f37638653245e1, type: 3}
 --- !u!4 &1398950589
 Transform:
   m_ObjectHideFlags: 0

@@ -12,14 +12,14 @@ public sealed class WebcamTest : MonoBehaviour
     [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI = null;
-    [SerializeField] MarkerBase _markerPrefab = null;
+    [SerializeField] Marker _markerPrefab = null;
 
     #endregion
 
     #region Internal objects
 
     FaceDetector _detector;
-    MarkerBase[] _markers = new MarkerBase[50];
+    Marker[] _markers = new Marker[50];
 
     #endregion
 
@@ -38,7 +38,7 @@ public sealed class WebcamTest : MonoBehaviour
     void OnDestroy()
     {
         _detector?.Dispose();
-        foreach (var m in _markers) Destroy(m);
+        foreach (var m in _markers) Destroy(m.gameObject);
     }
 
     void Update()
@@ -54,10 +54,13 @@ public sealed class WebcamTest : MonoBehaviour
         foreach (var detection in _detector.Detections)
         {
             if (i == _markers.Length) break;
-            _markers[i++].SetDetection(detection);
+            var marker = _markers[i++];
+            marker.detection = detection;
+            marker.gameObject.SetActive(true);
         }
 
-        for (; i < _markers.Length; i++) _markers[i].Hide();
+        for (; i < _markers.Length; i++)
+            _markers[i].gameObject.SetActive(false);
     }
 
     #endregion

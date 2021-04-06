@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 239075701044024434}
   - component: {fileID: 4810065378715405919}
   - component: {fileID: 3284493208067032943}
+  - component: {fileID: 8350498522753284527}
   - component: {fileID: 3699856667202305132}
   m_Layer: 5
-  m_Name: Marker
+  m_Name: KeyPointsMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,6 +84,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8350498522753284527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452067935137504425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2c59eff681a904dbc2e8785c410275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3699856667202305132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a420d91deb7afa44b655c970ff87693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseBox: {fileID: 239075701044024434}
   _keyPoints:
   - {fileID: 3903621281607213184}
   - {fileID: 7989179531762848512}

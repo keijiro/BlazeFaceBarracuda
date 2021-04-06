@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 6974349155671957140}
   - component: {fileID: 1183741824702252469}
   - component: {fileID: 6425989909945253257}
+  - component: {fileID: 5700980875579395161}
   - component: {fileID: 274997607444902762}
   m_Layer: 5
-  m_Name: Sunglass
+  m_Name: SunglassesMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,6 +74,18 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &5700980875579395161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742469691282320647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2c59eff681a904dbc2e8785c410275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &274997607444902762
 MonoBehaviour:
   m_ObjectHideFlags: 0

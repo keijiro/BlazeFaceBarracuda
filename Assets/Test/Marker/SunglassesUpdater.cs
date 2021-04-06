@@ -3,24 +3,28 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
-public sealed class SunglassesMarker : MarkerBase
+public sealed class SunglassesUpdater : MonoBehaviour
 {
     #region Object reference cache
 
+    Marker _marker;
     RectTransform _xform;
     RectTransform _parent;
 
     #endregion
 
-    #region MarkerBase implementation
+    #region MonoBehaviour implementation
 
-    public override void SetDetection(in Detection detection) 
+    void Start()
     {
-        if (_xform == null)
-        {
-            _xform = GetComponent<RectTransform>();
-            _parent = (RectTransform)_xform.parent;
-        }
+        _marker = GetComponent<Marker>();
+        _xform = GetComponent<RectTransform>();
+        _parent = (RectTransform)_xform.parent;
+    }
+
+    void LateUpdate()
+    {
+        var detection = _marker.detection;
 
         // Sunglasses position
         var mid = (detection.leftEye + detection.rightEye) / 2;
@@ -40,13 +44,7 @@ public sealed class SunglassesMarker : MarkerBase
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
         _xform.eulerAngles = Vector3.forward * angle;
-
-        // Enable
-        gameObject.SetActive(true);
     }
-
-    public override void Hide()
-      => gameObject.SetActive(false);
 
     #endregion
 }

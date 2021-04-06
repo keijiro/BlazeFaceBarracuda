@@ -12,7 +12,7 @@ public sealed class StaticImageTest : MonoBehaviour
     [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI;
-    [SerializeField] MarkerBase _markerPrefab = null;
+    [SerializeField] Marker _markerPrefab = null;
 
     #endregion
 
@@ -29,7 +29,7 @@ public sealed class StaticImageTest : MonoBehaviour
         foreach (var detection in detector.Detections)
         {
             var marker = Instantiate(_markerPrefab, _previewUI.transform);
-            marker.SetDetection(detection);
+            marker.detection = detection;
         }
     }
 
