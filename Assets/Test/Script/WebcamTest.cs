@@ -3,6 +3,9 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
+//
+// Real time detection test with webcam input
+//
 public sealed class WebcamTest : MonoBehaviour
 {
     #region Editable attributes

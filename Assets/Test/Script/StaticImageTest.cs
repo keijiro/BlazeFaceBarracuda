@@ -3,6 +3,9 @@ using UI = UnityEngine.UI;
 
 namespace BlazeFace {
 
+//
+// Simple detection test with static image
+//
 public sealed class StaticImageTest : MonoBehaviour
 {
     #region Editable attributes
