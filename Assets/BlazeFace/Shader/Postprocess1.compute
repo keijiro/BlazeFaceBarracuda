@@ -14,8 +14,9 @@ float _ImageSize;
 float _Threshold;
 
 // Output uniforms
-AppendStructuredBuffer<BoundingBox> _Output;
+AppendStructuredBuffer<Detection> _Output;
 
+// First layer: 8-pixel stride, two anchors
 #define CELLS_IN_ROW 16
 #define ANCHOR_COUNT 2
 #define KERNEL_NAME Postprocess1Layer1
@@ -25,6 +26,7 @@ AppendStructuredBuffer<BoundingBox> _Output;
 #undef ANCHOR_COUNT
 #undef KERNEL_NAME
 
+// Second layer: 16-pixel stride, six anchors
 #define CELLS_IN_ROW 8
 #define ANCHOR_COUNT 6
 #define KERNEL_NAME Postprocess1Layer2

@@ -6,57 +6,57 @@
 
 #include "Common.hlsl"
 
-#define THRESHOLD 0.5
+#define IOU_THRESHOLD 0.5
 
 // Input uniforms
-ConsumeStructuredBuffer<BoundingBox> _Input;
+ConsumeStructuredBuffer<Detection> _Input;
 ByteAddressBuffer _Count;
 
 // Output uniforms
-AppendStructuredBuffer<BoundingBox> _Output;
+AppendStructuredBuffer<Detection> _Output;
 
-// Local arrays for data cache
-groupshared BoundingBox _boxes[MAX_DETECTION];
-groupshared bool _flags[MAX_DETECTION];
+// Detection entry cache
+groupshared Detection _entry[MAX_DETECTION];
+groupshared bool _flag[MAX_DETECTION];
 
 [numthreads(1, 1, 1)]
 void Postprocess2(uint3 id : SV_DispatchThreadID)
 {
-    // Initialize data cache arrays
+    // Detection entry cache initialization
     uint entry_count = _Count.Load(0);
     if (entry_count == 0) return;
 
     for (uint i = 0; i < entry_count; i++)
     {
-        _boxes[i] = _Input.Consume();
-        _flags[i] = true;
+        _entry[i] = _Input.Consume();
+        _flag[i] = true;
     }
 
     // Overlap test permutation
     for (i = 0; i < entry_count - 1; i++)
     {
-        if (!_flags[i]) continue;
+        if (!_flag[i]) continue;
 
         for (uint j = i + 1; j < entry_count; j++)
         {
-            if (!_flags[j]) continue;
+            if (!_flag[j]) continue;
 
             // Overlap test
-            if (CalculateIOU(_boxes[i], _boxes[j]) < THRESHOLD) continue;
+            if (CalculateIOU(_entry[i], _entry[j]) < IOU_THRESHOLD) continue;
 
             // Score comparison
-            if (_boxes[i].score < _boxes[j].score)
+            if (_entry[i].score < _entry[j].score)
             {
-                _flags[i] = false;
+                _flag[i] = false;
                 // The box in the outer loop is removed. Break the inner loop.
                 break;
             }
             else
-                _flags[j] = false;
+                _flag[j] = false;
         }
     }
 
     // Output aggregation
     for (i = 0; i < entry_count; i++)
-        if (_flags[i]) _Output.Append(_boxes[i]);
+        if (_flag[i]) _Output.Append(_entry[i]);
 }

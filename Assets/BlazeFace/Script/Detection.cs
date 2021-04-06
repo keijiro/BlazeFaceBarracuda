@@ -4,8 +4,8 @@ using UnityEngine;
 namespace BlazeFace {
 
 //
-// Detection structure - The layout of this structure must be matched
-// with the one defined in Common.hlsl.
+// Detection structure. The layout of this structure must be matched with the
+// one defined in Common.hlsl.
 //
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Detection
