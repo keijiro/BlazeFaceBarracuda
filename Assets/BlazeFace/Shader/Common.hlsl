@@ -16,6 +16,33 @@ struct Detection
     float3 pad;
 };
 
+// We can encode the geometric features of Detection into a float4x4 matrix.
+// This is handy for calculating weighted means of detections.
+
+float4x4 DetectionToMatrix(in Detection d)
+{
+    return float4x4(d.center, d.extent,
+                    d.keyPoints[0], d.keyPoints[1],
+                    d.keyPoints[2], d.keyPoints[3],
+                    d.keyPoints[4], d.keyPoints[5]);
+}
+
+Detection MatrixToDetection(float4x4 m, float score)
+{
+    Detection d;
+    d.center = m._m00_m01;
+    d.extent = m._m02_m03;
+    d.keyPoints[0] = m._m10_m11;
+    d.keyPoints[1] = m._m12_m13;
+    d.keyPoints[2] = m._m20_m21;
+    d.keyPoints[3] = m._m22_m23;
+    d.keyPoints[4] = m._m30_m31;
+    d.keyPoints[5] = m._m32_m33;
+    d.score = score;
+    d.pad = 0;
+    return d;
+}
+
 // Common math functions
 
 float2 VFlip(float2 p)
