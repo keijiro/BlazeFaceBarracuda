@@ -23,10 +23,14 @@ public sealed class StaticImageTest : MonoBehaviour
         _previewUI.texture = _image;
 
         using var detector = new FaceDetector(_resources);
+
         detector.ProcessImage(_image, _scoreThreshold, _overlapThreshold);
 
-        foreach (var box in detector.DetectedFaces)
-            Instantiate(_markerPrefab, _previewUI.transform).SetAttributes(box);
+        foreach (var detection in detector.Detections)
+        {
+            var marker = Instantiate(_markerPrefab, _previewUI.transform);
+            marker.SetDetection(detection);
+        }
     }
 
     #endregion

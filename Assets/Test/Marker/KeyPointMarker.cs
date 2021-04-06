@@ -29,9 +29,9 @@ public sealed class KeyPointMarker : MarkerBase
 
     #endregion
 
-    #region Public methods
+    #region MarkerBase implementation
 
-    public override void SetAttributes(in BoundingBox box)
+    public override void SetDetection(in Detection detection)
     {
         if (_xform == null)
         {
@@ -43,28 +43,28 @@ public sealed class KeyPointMarker : MarkerBase
 
         // Bounding box position
         var rect = _parent.rect;
-        var x = box.center.x * rect.width;
-        var y = (1 - box.center.y) * rect.height;
-        var w = box.extent.x * rect.width;
-        var h = box.extent.y * rect.height;
+        var x = detection.center.x * rect.width;
+        var y = (1 - detection.center.y) * rect.height;
+        var w = detection.extent.x * rect.width;
+        var h = detection.extent.y * rect.height;
 
         _xform.anchoredPosition = new Vector2(x, y);
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
 
         // Label
-        _label.text = $"{(int)(box.score * 100)}%";
+        _label.text = $"{(int)(detection.score * 100)}%";
 
         // Panel color
         _panel.color = new Color(1, 0, 0, 0.5f);
 
         // Key points
-        SetKeyPoint(_keyPoints[0], box.rightEye);
-        SetKeyPoint(_keyPoints[1], box.leftEye);
-        SetKeyPoint(_keyPoints[2], box.nose);
-        SetKeyPoint(_keyPoints[3], box.mouth);
-        SetKeyPoint(_keyPoints[4], box.rightEar);
-        SetKeyPoint(_keyPoints[5], box.leftEar);
+        SetKeyPoint(_keyPoints[0], detection.rightEye);
+        SetKeyPoint(_keyPoints[1], detection.leftEye);
+        SetKeyPoint(_keyPoints[2], detection.nose);
+        SetKeyPoint(_keyPoints[3], detection.mouth);
+        SetKeyPoint(_keyPoints[4], detection.rightEar);
+        SetKeyPoint(_keyPoints[5], detection.leftEar);
 
         // Enable
         gameObject.SetActive(true);

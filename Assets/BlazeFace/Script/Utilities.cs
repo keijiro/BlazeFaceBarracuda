@@ -5,6 +5,11 @@ namespace BlazeFace {
 
 static class IWorkerExtensions
 {
+    //
+    // Retrieves an output tensor from a NN worker and returns it as a
+    // temporary render texture. The caller must release it using
+    // RenderTexture.ReleaseTemporary.
+    //
     public static RenderTexture
       CopyOutputToTempRT(this IWorker worker, string name, int w, int h)
     {

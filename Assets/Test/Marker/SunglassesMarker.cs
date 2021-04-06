@@ -12,9 +12,9 @@ public sealed class SunglassesMarker : MarkerBase
 
     #endregion
 
-    #region Public methods
+    #region MarkerBase implementation
 
-    public override void SetAttributes(in BoundingBox box)
+    public override void SetDetection(in Detection detection) 
     {
         if (_xform == null)
         {
@@ -23,10 +23,11 @@ public sealed class SunglassesMarker : MarkerBase
         }
 
         // Sunglasses position
-        var mid = (box.leftEye + box.rightEye) / 2;
-        var width = (box.rightEye - box.leftEye).magnitude;
-        var angle = Vector2.Angle(box.leftEye - box.rightEye, Vector2.right);
-        if (box.rightEye.y < box.leftEye.y) angle *= -1;
+        var mid = (detection.leftEye + detection.rightEye) / 2;
+        var diff = detection.leftEye - detection.rightEye;
+        var width = diff.magnitude;
+        var angle = Vector2.Angle(diff, Vector2.right);
+        if (detection.rightEye.y < detection.leftEye.y) angle *= -1;
 
         // Transform
         var rect = _parent.rect;

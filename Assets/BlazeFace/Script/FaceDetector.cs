@@ -4,17 +4,20 @@ using UnityEngine;
 
 namespace BlazeFace {
 
+//
+// Main face detector class
+//
 public sealed class FaceDetector : System.IDisposable
 {
     #region Public accessors
 
-    public ComputeBuffer BoundingBoxBuffer
+    public ComputeBuffer DetectionBuffer
       => _post2Buffer;
 
     public void SetIndirectDrawCount(ComputeBuffer drawArgs)
       => ComputeBuffer.CopyCount(_post2Buffer, drawArgs, sizeof(uint));
 
-    public IEnumerable<BoundingBox> DetectedFaces
+    public IEnumerable<Detection> Detections
       => _post2ReadCache ?? UpdatePost2ReadCache();
 
     #endregion
@@ -31,10 +34,10 @@ public sealed class FaceDetector : System.IDisposable
         _preBuffer = new ComputeBuffer(_size * _size * 3, sizeof(float));
 
         _post1Buffer = new ComputeBuffer
-          (MaxDetection, BoundingBox.Size, ComputeBufferType.Append);
+          (MaxDetection, Detection.Size, ComputeBufferType.Append);
 
         _post2Buffer = new ComputeBuffer
-          (MaxDetection, BoundingBox.Size, ComputeBufferType.Append);
+          (MaxDetection, Detection.Size, ComputeBufferType.Append);
 
         _countBuffer = new ComputeBuffer
           (1, sizeof(uint), ComputeBufferType.Raw);
@@ -156,13 +159,13 @@ public sealed class FaceDetector : System.IDisposable
 
     #region GPU to CPU readback
 
-    BoundingBox[] _post2ReadCache;
+    Detection[] _post2ReadCache;
     int[] _countReadCache = new int[1];
 
-    BoundingBox[] UpdatePost2ReadCache()
+    Detection[] UpdatePost2ReadCache()
     {
         _countBuffer.GetData(_countReadCache, 0, 0, 1);
-        var buffer = new BoundingBox[_countReadCache[0]];
+        var buffer = new Detection[_countReadCache[0]];
         _post2Buffer.GetData(buffer, 0, 0, buffer.Length);
         return buffer;
     }

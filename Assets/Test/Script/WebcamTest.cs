@@ -30,7 +30,7 @@ public sealed class WebcamTest : MonoBehaviour
         // Face detector initialization
         _detector = new FaceDetector(_resources);
 
-        // Marker populating
+        // Marker population
         for (var i = 0; i < _markers.Length; i++)
             _markers[i] = Instantiate(_markerPrefab, _previewUI.transform);
     }
@@ -51,10 +51,10 @@ public sealed class WebcamTest : MonoBehaviour
         // Marker update
         var i = 0;
 
-        foreach (var box in _detector.DetectedFaces)
+        foreach (var detection in _detector.Detections)
         {
             if (i == _markers.Length) break;
-            _markers[i++].SetAttributes(box);
+            _markers[i++].SetDetection(detection);
         }
 
         for (; i < _markers.Length; i++) _markers[i].Hide();

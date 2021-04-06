@@ -3,6 +3,9 @@ using Unity.Barracuda;
 
 namespace BlazeFace {
 
+//
+// ScriptableObject class used to hold references to internal assets
+//
 [CreateAssetMenu(fileName = "BlazeFace",
                  menuName = "ScriptableObjects/BlazeFace Resource Set")]
 public sealed class ResourceSet : ScriptableObject
