@@ -6,10 +6,11 @@
 
 #include "Common.hlsl"
 
+#define THRESHOLD 0.5
+
 // Input uniforms
 ConsumeStructuredBuffer<BoundingBox> _Input;
 ByteAddressBuffer _Count;
-float _Threshold;
 
 // Output uniforms
 AppendStructuredBuffer<BoundingBox> _Output;
@@ -41,7 +42,7 @@ void Postprocess2(uint3 id : SV_DispatchThreadID)
             if (!_flags[j]) continue;
 
             // Overlap test
-            if (CalculateIOU(_boxes[i], _boxes[j]) < _Threshold) continue;
+            if (CalculateIOU(_boxes[i], _boxes[j]) < THRESHOLD) continue;
 
             // Score comparison
             if (_boxes[i].score < _boxes[j].score)

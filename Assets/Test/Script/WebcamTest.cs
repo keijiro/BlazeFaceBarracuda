@@ -8,8 +8,7 @@ public sealed class WebcamTest : MonoBehaviour
     #region Editable attributes
 
     [SerializeField] WebcamInput _webcam = null;
-    [SerializeField, Range(0, 1)] float _scoreThreshold = 0.1f;
-    [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
+    [SerializeField, Range(0, 1)] float _threshold = 0.7f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI = null;
     [SerializeField] Marker _markerPrefab = null;
@@ -42,8 +41,7 @@ public sealed class WebcamTest : MonoBehaviour
     {
         _previewUI.texture = _webcam.Texture;
 
-        _detector.ProcessImage
-          (_webcam.Texture, _scoreThreshold, _overlapThreshold);
+        _detector.ProcessImage(_webcam.Texture, _threshold);
 
         // Marker update
         var i = 0;

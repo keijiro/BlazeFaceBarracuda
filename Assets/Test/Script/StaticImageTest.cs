@@ -8,8 +8,7 @@ public sealed class StaticImageTest : MonoBehaviour
     #region Editable attributes
 
     [SerializeField] Texture2D _image;
-    [SerializeField, Range(0, 1)] float _scoreThreshold = 0.7f;
-    [SerializeField, Range(0, 1)] float _overlapThreshold = 0.5f;
+    [SerializeField, Range(0, 1)] float _threshold = 0.7f;
     [SerializeField] ResourceSet _resources = null;
     [SerializeField] UI.RawImage _previewUI;
     [SerializeField] Marker _markerPrefab = null;
@@ -24,7 +23,7 @@ public sealed class StaticImageTest : MonoBehaviour
 
         using var detector = new FaceDetector(_resources);
 
-        detector.ProcessImage(_image, _scoreThreshold, _overlapThreshold);
+        detector.ProcessImage(_image, _threshold);
 
         foreach (var detection in detector.Detections)
         {

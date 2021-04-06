@@ -22,14 +22,44 @@ public sealed class FaceDetector : System.IDisposable
 
     #endregion
 
-    #region Public constructor
+    #region Public methods
 
     public FaceDetector(ResourceSet resources)
     {
         _resources = resources;
+        AllocateObjects();
+    }
 
+    public void Dispose()
+      => DeallocateObjects();
+
+    public void ProcessImage(Texture image, float threshold)
+      => RunModel(image, threshold);
+
+    #endregion
+
+    #region Compile-time constants
+
+    // Maximum number of detections. This value must be matched with
+    // MAX_DETECTION in Common.hlsl.
+    const int MaxDetection = 64;
+
+    #endregion
+
+    #region Private objects
+
+    ResourceSet _resources;
+    ComputeBuffer _preBuffer;
+    ComputeBuffer _post1Buffer;
+    ComputeBuffer _post2Buffer;
+    ComputeBuffer _countBuffer;
+    IWorker _worker;
+    int _size;
+
+    void AllocateObjects()
+    {
         var model = ModelLoader.Load(_resources.model);
-        _size = model.inputs[0].shape[6];
+        _size = model.inputs[0].shape[6]; // Input tensor width
 
         _preBuffer = new ComputeBuffer(_size * _size * 3, sizeof(float));
 
@@ -45,11 +75,7 @@ public sealed class FaceDetector : System.IDisposable
         _worker = model.CreateWorker();
     }
 
-    #endregion
-
-    #region IDisposable implementation
-
-    public void Dispose()
+    void DeallocateObjects()
     {
         _preBuffer?.Dispose();
         _preBuffer = null;
@@ -69,31 +95,9 @@ public sealed class FaceDetector : System.IDisposable
 
     #endregion
 
-    #region Public methods
+    #region Neural network inference function
 
-    public void ProcessImage
-      (Texture sourceTexture, float scoreThreshold, float overlapThreshold)
-        => RunModel(sourceTexture, scoreThreshold, overlapThreshold);
-
-    #endregion
-
-    #region Private constants and variables
-
-    const int MaxDetection = 64;
-
-    ResourceSet _resources;
-    ComputeBuffer _preBuffer;
-    ComputeBuffer _post1Buffer;
-    ComputeBuffer _post2Buffer;
-    ComputeBuffer _countBuffer;
-    IWorker _worker;
-    int _size;
-
-    #endregion
-
-    #region Inference function
-
-    void RunModel(Texture source, float minScore, float maxOverlap)
+    void RunModel(Texture source, float threshold)
     {
         // Reset the compute buffer counters.
         _post1Buffer.SetCounterValue(0);
@@ -119,7 +123,7 @@ public sealed class FaceDetector : System.IDisposable
         // 1st postprocess (bounding box aggregation)
         var post1 = _resources.postprocess1;
         post1.SetFloat("_ImageSize", _size);
-        post1.SetFloat("_Threshold", minScore);
+        post1.SetFloat("_Threshold", threshold);
 
         post1.SetTexture(0, "_Scores", scores1RT);
         post1.SetTexture(0, "_Boxes", boxes1RT);
@@ -131,24 +135,23 @@ public sealed class FaceDetector : System.IDisposable
         post1.SetBuffer(1, "_Output", _post1Buffer);
         post1.Dispatch(1, 1, 1, 1);
 
-        // Release temporary render textures.
+        // Release the temporary render textures.
         RenderTexture.ReleaseTemporary(scores1RT);
         RenderTexture.ReleaseTemporary(scores2RT);
         RenderTexture.ReleaseTemporary(boxes1RT);
         RenderTexture.ReleaseTemporary(boxes2RT);
 
-        // Bounding box count
+        // Retrieve the bounding box count.
         ComputeBuffer.CopyCount(_post1Buffer, _countBuffer, 0);
 
         // 2nd postprocess (overlap removal)
         var post2 = _resources.postprocess2;
-        post2.SetFloat("_Threshold", maxOverlap);
         post2.SetBuffer(0, "_Input", _post1Buffer);
         post2.SetBuffer(0, "_Count", _countBuffer);
         post2.SetBuffer(0, "_Output", _post2Buffer);
         post2.Dispatch(0, 1, 1, 1);
 
-        // Bounding box count after removal
+        // Retrieve the bounding box count after removal.
         ComputeBuffer.CopyCount(_post2Buffer, _countBuffer, 0);
 
         // Read cache invalidation
@@ -165,9 +168,12 @@ public sealed class FaceDetector : System.IDisposable
     Detection[] UpdatePost2ReadCache()
     {
         _countBuffer.GetData(_countReadCache, 0, 0, 1);
-        var buffer = new Detection[_countReadCache[0]];
-        _post2Buffer.GetData(buffer, 0, 0, buffer.Length);
-        return buffer;
+        var count = _countReadCache[0];
+
+        _post2ReadCache = new Detection[count];
+        _post2Buffer.GetData(_post2ReadCache, 0, 0, count);
+
+        return _post2ReadCache;
     }
 
     #endregion

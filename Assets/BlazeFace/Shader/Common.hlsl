@@ -1,9 +1,12 @@
 #ifndef _BLAZEFACEBARRACUDA_COMMON_H_
 #define _BLAZEFACEBARRACUDA_COMMON_H_
 
+// Maximum number of detections. This value must be matched with MaxDetection
+// in FaceDetector.cs.
 #define MAX_DETECTION 64
 
-// Bounding box structure used for storing object detection results
+// Bounding box structure used for storing object detection results. The layout
+// of this structure must be matched with the one defined in Detection.cs
 struct BoundingBox
 {
     float2 center;
