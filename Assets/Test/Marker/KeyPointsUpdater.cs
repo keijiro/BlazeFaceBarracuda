@@ -11,26 +11,16 @@ public sealed class KeyPointsUpdater : MonoBehaviour
 
     #endregion
 
-    #region Object reference cache
+    #region Private members
 
     Marker _marker;
     RectTransform _xform;
     RectTransform _parent;
-    UI.Image _panel;
     UI.Text _label;
 
-    #endregion
-
-    #region Private methods
-
     void SetKeyPoint(RectTransform xform, Vector2 point)
-    {
-        var rect = _parent.rect;
-        var origin = _xform.anchoredPosition;
-        var x = point.x * rect.width;
-        var y = (1 - point.y) * rect.height;
-        xform.anchoredPosition = new Vector2(x, y) - origin;
-    }
+      => xform.anchoredPosition =
+           point * _parent.rect.size - _xform.anchoredPosition;
 
     #endregion
 
@@ -41,7 +31,6 @@ public sealed class KeyPointsUpdater : MonoBehaviour
         _marker = GetComponent<Marker>();
         _xform = GetComponent<RectTransform>();
         _parent = (RectTransform)_xform.parent;
-        _panel = GetComponent<UI.Image>();
         _label = GetComponentInChildren<UI.Text>();
     }
 
@@ -49,22 +38,13 @@ public sealed class KeyPointsUpdater : MonoBehaviour
     {
         var detection = _marker.detection;
 
-        // Bounding box position
-        var rect = _parent.rect;
-        var x = detection.center.x * rect.width;
-        var y = (1 - detection.center.y) * rect.height;
-        var w = detection.extent.x * rect.width;
-        var h = detection.extent.y * rect.height;
+        // Bounding box center
+        _xform.anchoredPosition = detection.center * _parent.rect.size;
 
-        _xform.anchoredPosition = new Vector2(x, y);
-        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
-        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
-
-        // Label
-        _label.text = $"{(int)(detection.score * 100)}%";
-
-        // Panel color
-        _panel.color = new Color(1, 0, 0, 0.5f);
+        // Bounding box size
+        var size = detection.extent * _parent.rect.size;
+        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
+        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 
         // Key points
         SetKeyPoint(_keyPoints[0], detection.rightEye);
@@ -73,6 +53,9 @@ public sealed class KeyPointsUpdater : MonoBehaviour
         SetKeyPoint(_keyPoints[3], detection.mouth);
         SetKeyPoint(_keyPoints[4], detection.rightEar);
         SetKeyPoint(_keyPoints[5], detection.leftEar);
+
+        // Label
+        _label.text = $"{(int)(detection.score * 100)}%";
     }
 
     #endregion

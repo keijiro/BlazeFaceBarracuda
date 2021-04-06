@@ -5,7 +5,7 @@ namespace BlazeFace {
 
 public sealed class SunglassesUpdater : MonoBehaviour
 {
-    #region Object reference cache
+    #region Private members
 
     Marker _marker;
     RectTransform _xform;
@@ -26,23 +26,21 @@ public sealed class SunglassesUpdater : MonoBehaviour
     {
         var detection = _marker.detection;
 
-        // Sunglasses position
+        // Eye key points
         var mid = (detection.leftEye + detection.rightEye) / 2;
         var diff = detection.leftEye - detection.rightEye;
-        var width = diff.magnitude;
+
+        // Position
+        _xform.anchoredPosition = mid * _parent.rect.size;
+
+        // Size
+        var size = diff.magnitude * 3 * _parent.rect.width;
+        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size);
+        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size);
+
+        // Rotation
         var angle = Vector2.Angle(diff, Vector2.right);
-        if (detection.rightEye.y < detection.leftEye.y) angle *= -1;
-
-        // Transform
-        var rect = _parent.rect;
-        var x = mid.x * rect.width;
-        var y = (1 - mid.y) * rect.height;
-        var w = width * 3 * rect.width;
-        var h = w / 26 * 5;
-
-        _xform.anchoredPosition = new Vector2(x, y);
-        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
-        _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
+        if (detection.rightEye.y > detection.leftEye.y) angle *= -1;
         _xform.eulerAngles = Vector3.forward * angle;
     }
 

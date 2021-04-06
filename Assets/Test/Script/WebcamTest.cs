@@ -19,7 +19,7 @@ public sealed class WebcamTest : MonoBehaviour
     #region Internal objects
 
     FaceDetector _detector;
-    Marker[] _markers = new Marker[50];
+    Marker[] _markers = new Marker[16];
 
     #endregion
 
@@ -36,10 +36,7 @@ public sealed class WebcamTest : MonoBehaviour
     }
 
     void OnDestroy()
-    {
-        _detector?.Dispose();
-        foreach (var m in _markers) Destroy(m.gameObject);
-    }
+      => _detector?.Dispose();
 
     void Update()
     {

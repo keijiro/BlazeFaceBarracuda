@@ -29,12 +29,18 @@ void KERNEL_NAME(uint2 id : SV_DispatchThreadID)
         box.score = score;
         box.pad = 0;
 
+        // FIXME
+        box.center.y = 1 - box.center.y;
+
         // Key points
         [unroll] for (uint kidx = 0; kidx < 6; kidx++)
         {
             float kx = _Boxes[uint2(4 + 2 * kidx + 0, ref_y)];
             float ky = _Boxes[uint2(4 + 2 * kidx + 1, ref_y)];
             box.keyPoints[kidx] = anchor + float2(kx, ky) / _ImageSize;
+
+            // FIXME
+            box.keyPoints[kidx].y = 1 - box.keyPoints[kidx].y;
         }
 
         // Thresholding
