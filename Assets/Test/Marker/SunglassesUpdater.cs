@@ -1,7 +1,7 @@
 using UnityEngine;
 using UI = UnityEngine.UI;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 public sealed class SunglassesUpdater : MonoBehaviour
 {
@@ -47,4 +47,4 @@ public sealed class SunglassesUpdater : MonoBehaviour
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

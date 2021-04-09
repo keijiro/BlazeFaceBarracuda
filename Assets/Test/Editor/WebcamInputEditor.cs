@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 [CustomEditor(typeof(WebcamInput))]
 sealed class WebcamInputEditor : Editor
@@ -50,4 +50,4 @@ sealed class WebcamInputEditor : Editor
     }
 }
 
-} // namespace MeetBarracuda
+} // namespace MediaPipe.BlazeFace

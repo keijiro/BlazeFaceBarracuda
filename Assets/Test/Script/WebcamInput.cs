@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 public sealed class WebcamInput : MonoBehaviour
 {
@@ -57,4 +57,4 @@ public sealed class WebcamInput : MonoBehaviour
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

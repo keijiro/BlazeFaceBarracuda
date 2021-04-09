@@ -1,7 +1,7 @@
 using UnityEngine;
 using UI = UnityEngine.UI;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 //
 // Simple detection test with static image
@@ -38,4 +38,4 @@ public sealed class StaticImageTest : MonoBehaviour
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

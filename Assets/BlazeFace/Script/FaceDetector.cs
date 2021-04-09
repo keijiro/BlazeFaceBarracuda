@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.Barracuda;
 using UnityEngine;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 //
 // Main face detector class
@@ -179,4 +179,4 @@ public sealed class FaceDetector : System.IDisposable
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

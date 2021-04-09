@@ -1,7 +1,7 @@
 using UnityEngine;
 using UI = UnityEngine.UI;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 public sealed class KeyPointsUpdater : MonoBehaviour
 {
@@ -61,4 +61,4 @@ public sealed class KeyPointsUpdater : MonoBehaviour
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

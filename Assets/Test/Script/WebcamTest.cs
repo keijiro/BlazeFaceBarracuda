@@ -1,7 +1,7 @@
 using UnityEngine;
 using UI = UnityEngine.UI;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 //
 // Real time detection test with webcam input
@@ -64,4 +64,4 @@ public sealed class WebcamTest : MonoBehaviour
     #endregion
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

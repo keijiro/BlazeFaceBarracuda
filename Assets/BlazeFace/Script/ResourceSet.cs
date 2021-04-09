@@ -1,13 +1,13 @@
 using UnityEngine;
 using Unity.Barracuda;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 //
 // ScriptableObject class used to hold references to internal assets
 //
 [CreateAssetMenu(fileName = "BlazeFace",
-                 menuName = "ScriptableObjects/BlazeFace Resource Set")]
+                 menuName = "ScriptableObjects/MediaPipe/BlazeFace Resource Set")]
 public sealed class ResourceSet : ScriptableObject
 {
     public NNModel model;
@@ -16,4 +16,4 @@ public sealed class ResourceSet : ScriptableObject
     public ComputeShader postprocess2;
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace

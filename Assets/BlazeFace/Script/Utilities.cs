@@ -1,7 +1,7 @@
 using Unity.Barracuda;
 using UnityEngine;
 
-namespace BlazeFace {
+namespace MediaPipe.BlazeFace {
 
 static class IWorkerExtensions
 {
@@ -22,4 +22,4 @@ static class IWorkerExtensions
     }
 }
 
-} // namespace BlazeFace
+} // namespace MediaPipe.BlazeFace
