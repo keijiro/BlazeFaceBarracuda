@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/WebcamTest.unity
-    guid: 96aacd413c7c37f4e9df399114082954
+    path: Assets/StaticImage.unity
+    guid: 23795487cea7bea45a9176858b62b8d3
   m_configObjects: {}
