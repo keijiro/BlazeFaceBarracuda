@@ -40,7 +40,7 @@ public sealed class WebcamTest : MonoBehaviour
     void OnDestroy()
       => _detector?.Dispose();
 
-    void Update()
+    void LateUpdate()
     {
         _previewUI.texture = _webcam.Texture;
 
