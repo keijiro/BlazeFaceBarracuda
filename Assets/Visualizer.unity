@@ -342,7 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 0}
   _webcam: {fileID: 1772343772}
-  _threshold: 0.7
+  _threshold: 0.75
   _previewUI: {fileID: 1337112555}
   _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _markerPrefab: {fileID: 8350498522753284527, guid: 47a0fcd207399f14b8f37638653245e1, type: 3}
@@ -406,7 +406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 0}
   _webcam: {fileID: 1903389450}
-  _threshold: 0.7
+  _threshold: 0.75
   _previewUI: {fileID: 1337112555}
   _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _markerPrefab: {fileID: 5700980875579395161, guid: a69713ab15a8c4e4aa77720898ee9059, type: 3}
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 2800000, guid: 81031357d7ecd6b439921f3d537988ea, type: 3}
   _webcam: {fileID: 0}
-  _threshold: 0.7
+  _threshold: 0.75
   _previewUI: {fileID: 1337112555}
   _resources: {fileID: 11400000, guid: bffd9847cd5fccc4e82026bcc7ae255a, type: 2}
   _markerPrefab: {fileID: 8350498522753284527, guid: 47a0fcd207399f14b8f37638653245e1, type: 3}

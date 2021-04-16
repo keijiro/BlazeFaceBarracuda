@@ -33,7 +33,7 @@ public sealed partial class FaceDetector : System.IDisposable
     public void Dispose()
       => DeallocateObjects();
 
-    public void ProcessImage(Texture image, float threshold)
+    public void ProcessImage(Texture image, float threshold = 0.75f)
       => RunModel(image, threshold);
 
     #endregion

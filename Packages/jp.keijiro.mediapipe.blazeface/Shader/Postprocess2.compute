@@ -6,7 +6,7 @@
 
 #include "Common.hlsl"
 
-#define IOU_THRESHOLD 0.5
+#define IOU_THRESHOLD 0.3
 
 // Input uniforms
 ConsumeStructuredBuffer<Detection> _Input;

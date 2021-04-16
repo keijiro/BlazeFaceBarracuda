@@ -10,7 +10,7 @@ public sealed class Visualizer : MonoBehaviour
     [SerializeField] Texture2D _image = null;
     [SerializeField] WebcamInput _webcam = null;
     [Space]
-    [SerializeField, Range(0, 1)] float _threshold = 0.7f;
+    [SerializeField, Range(0, 1)] float _threshold = 0.75f;
     [Space]
     [SerializeField] UI.RawImage _previewUI = null;
     [Space]
