@@ -7,7 +7,7 @@ namespace MediaPipe.BlazeFace {
 //
 // Main face detector class
 //
-public sealed class FaceDetector : System.IDisposable
+public sealed partial class FaceDetector : System.IDisposable
 {
     #region Public accessors
 
