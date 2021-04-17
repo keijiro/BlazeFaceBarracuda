@@ -47,12 +47,12 @@ public sealed class KeyPointsUpdater : MonoBehaviour
         _xform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
 
         // Key points
-        SetKeyPoint(_keyPoints[0], detection.rightEye);
-        SetKeyPoint(_keyPoints[1], detection.leftEye);
+        SetKeyPoint(_keyPoints[0], detection.leftEye);
+        SetKeyPoint(_keyPoints[1], detection.rightEye);
         SetKeyPoint(_keyPoints[2], detection.nose);
         SetKeyPoint(_keyPoints[3], detection.mouth);
-        SetKeyPoint(_keyPoints[4], detection.rightEar);
-        SetKeyPoint(_keyPoints[5], detection.leftEar);
+        SetKeyPoint(_keyPoints[4], detection.leftEar);
+        SetKeyPoint(_keyPoints[5], detection.rightEar);
 
         // Label
         _label.text = $"{(int)(detection.score * 100)}%";
