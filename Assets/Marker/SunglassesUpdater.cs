@@ -27,8 +27,8 @@ public sealed class SunglassesUpdater : MonoBehaviour
         var detection = _marker.detection;
 
         // Eye key points
-        var mid = (detection.leftEye + detection.rightEye) / 2;
-        var diff = detection.leftEye - detection.rightEye;
+        var mid = (detection.rightEye + detection.leftEye) / 2;
+        var diff = detection.rightEye - detection.leftEye;
 
         // Position
         _xform.anchoredPosition = mid * _parent.rect.size;
@@ -40,7 +40,7 @@ public sealed class SunglassesUpdater : MonoBehaviour
 
         // Rotation
         var angle = Vector2.Angle(diff, Vector2.right);
-        if (detection.rightEye.y > detection.leftEye.y) angle *= -1;
+        if (detection.leftEye.y > detection.rightEye.y) angle *= -1;
         _xform.eulerAngles = Vector3.forward * angle;
     }
 
