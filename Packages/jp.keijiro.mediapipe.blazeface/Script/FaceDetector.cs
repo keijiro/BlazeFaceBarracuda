@@ -49,7 +49,7 @@ public sealed partial class FaceDetector : System.IDisposable
     #region Private objects
 
     ResourceSet _resources;
-    ComputeBuffer _preBuffer;
+    (Tensor tensor, ComputeTensorData data) _preprocess;
     ComputeBuffer _post1Buffer;
     ComputeBuffer _post2Buffer;
     ComputeBuffer _countBuffer;
@@ -59,9 +59,27 @@ public sealed partial class FaceDetector : System.IDisposable
     void AllocateObjects()
     {
         var model = ModelLoader.Load(_resources.model);
-        _size = model.inputs[0].shape[6]; // Input tensor width
 
-        _preBuffer = new ComputeBuffer(_size * _size * 3, sizeof(float));
+#if BARRACUDA_4_0_0_OR_LATER
+        _size = model.inputs[0].shape[2].value; // Input tensor width
+        var inputShape = model.inputs[0].shape.ToTensorShape();
+#else
+        _size = model.inputs[0].shape[6]; // Input tensor width
+        var inputShape = new TensorShape(model.inputs[0].shape);
+#endif
+
+        // Preprocessing buffers
+#if BARRACUDA_4_0_0_OR_LATER
+        _preprocess.data =
+          new ComputeTensorData(inputShape, "Preprocess", false);
+        _preprocess.tensor = TensorFloat.Zeros(inputShape);
+        _preprocess.tensor.AttachToDevice(_preprocess.data);
+#else
+        _preprocess.data =
+          new ComputeTensorData(inputShape, "Preprocess",
+                                ComputeInfo.ChannelsOrder.NHWC, false);
+        _preprocess.tensor = new Tensor(inputShape, _preprocess.data);
+#endif
 
         _post1Buffer = new ComputeBuffer
           (MaxDetection, Detection.Size, ComputeBufferType.Append);
@@ -72,13 +90,13 @@ public sealed partial class FaceDetector : System.IDisposable
         _countBuffer = new ComputeBuffer
           (1, sizeof(uint), ComputeBufferType.Raw);
 
-        _worker = model.CreateWorker();
+        _worker = model.CreateWorker(WorkerFactory.Device.GPU);
     }
 
     void DeallocateObjects()
     {
-        _preBuffer?.Dispose();
-        _preBuffer = null;
+        _preprocess.tensor?.Dispose();
+        _preprocess = (null, null);
 
         _post1Buffer?.Dispose();
         _post1Buffer = null;
@@ -107,12 +125,11 @@ public sealed partial class FaceDetector : System.IDisposable
         var pre = _resources.preprocess;
         pre.SetInt("_ImageSize", _size);
         pre.SetTexture(0, "_Texture", source);
-        pre.SetBuffer(0, "_Tensor", _preBuffer);
+        pre.SetBuffer(0, "_Tensor", _preprocess.data.buffer);
         pre.Dispatch(0, _size / 8, _size / 8, 1);
 
         // Run the BlazeFace model.
-        using (var tensor = new Tensor(1, _size, _size, 3, _preBuffer))
-            _worker.Execute(tensor);
+        _worker.Execute(_preprocess.tensor);
 
         // Output tensors -> Temporary render textures
         var scores1RT = _worker.CopyOutputToTempRT("Identity"  ,  1, 512);
