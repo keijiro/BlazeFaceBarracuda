@@ -1,20 +1,16 @@
 using UnityEngine;
-using UI = UnityEngine.UI;
-
-namespace MediaPipe.BlazeFace {
+using UnityEngine.UI;
+using Klak.TestTools;
+using MediaPipe.BlazeFace;
 
 public sealed class Visualizer : MonoBehaviour
 {
     #region Editable attributes
 
-    [SerializeField] Texture2D _image = null;
-    [SerializeField] WebcamInput _webcam = null;
-    [Space]
-    [SerializeField, Range(0, 1)] float _threshold = 0.75f;
-    [Space]
-    [SerializeField] UI.RawImage _previewUI = null;
-    [Space]
+    [SerializeField] ImageSource _source = null;
     [SerializeField] ResourceSet _resources = null;
+    [SerializeField, Range(0, 1)] float _threshold = 0.75f;
+    [SerializeField] RawImage _previewUI = null;
     [SerializeField] Marker _markerPrefab = null;
 
     #endregion
@@ -24,10 +20,27 @@ public sealed class Visualizer : MonoBehaviour
     FaceDetector _detector;
     Marker[] _markers = new Marker[16];
 
-    void RunDetector(Texture input)
+    #endregion
+
+    #region MonoBehaviour implementation
+
+    void Start()
+    {
+        // Face detector initialization
+        _detector = new FaceDetector(_resources);
+
+        // Marker population
+        for (var i = 0; i < _markers.Length; i++)
+            _markers[i] = Instantiate(_markerPrefab, _previewUI.transform);
+    }
+
+    void OnDestroy()
+      => _detector?.Dispose();
+
+    void LateUpdate()
     {
         // Face detection
-        _detector.ProcessImage(input, _threshold);
+        _detector.ProcessImage(_source.Texture, _threshold);
 
         // Marker update
         var i = 0;
@@ -44,36 +57,8 @@ public sealed class Visualizer : MonoBehaviour
             _markers[i].gameObject.SetActive(false);
 
         // UI update
-        _previewUI.texture = input;
-    }
-
-    #endregion
-
-    #region MonoBehaviour implementation
-
-    void Start()
-    {
-        // Face detector initialization
-        _detector = new FaceDetector(_resources);
-
-        // Marker population
-        for (var i = 0; i < _markers.Length; i++)
-            _markers[i] = Instantiate(_markerPrefab, _previewUI.transform);
-
-        // Static image test: Run the detector once.
-        if (_image != null) RunDetector(_image);
-    }
-
-    void OnDestroy()
-      => _detector?.Dispose();
-
-    void LateUpdate()
-    {
-        // Webcam test: Run the detector every frame.
-        if (_webcam != null) RunDetector(_webcam.Texture);
+        _previewUI.texture = _source.Texture;
     }
 
     #endregion
 }
-
-} // namespace MediaPipe.BlazeFace
