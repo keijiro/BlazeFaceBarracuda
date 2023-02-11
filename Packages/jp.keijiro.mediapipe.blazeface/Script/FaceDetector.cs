@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Unity.Barracuda;
 using UnityEngine;
 
@@ -107,37 +106,25 @@ public sealed partial class FaceDetector : System.IDisposable
         pre.SetInt("_ImageSize", _size);
         pre.SetTexture(0, "_Texture", source);
         pre.SetBuffer(0, "_Tensor", _preprocess.data.buffer);
-        pre.Dispatch(0, _size / 8, _size / 8, 1);
+        pre.DispatchThreads(0, _size, _size, 1);
 
         // Run the BlazeFace model.
         _worker.Execute(_preprocess.tensor);
-
-        // Output tensors -> Temporary render textures
-        var scores1RT = _worker.CopyOutputToTempRT("Identity"  ,  1, 512);
-        var scores2RT = _worker.CopyOutputToTempRT("Identity_1",  1, 384);
-        var  boxes1RT = _worker.CopyOutputToTempRT("Identity_2", 16, 512);
-        var  boxes2RT = _worker.CopyOutputToTempRT("Identity_3", 16, 384);
 
         // 1st postprocess (bounding box aggregation)
         var post1 = _resources.postprocess1;
         post1.SetFloat("_ImageSize", _size);
         post1.SetFloat("_Threshold", threshold);
 
-        post1.SetTexture(0, "_Scores", scores1RT);
-        post1.SetTexture(0, "_Boxes", boxes1RT);
+        post1.SetBuffer(0, "_Scores", _worker.PeekOutputBuffer("Identity"));
+        post1.SetBuffer(0, "_Boxes", _worker.PeekOutputBuffer("Identity_2"));
         post1.SetBuffer(0, "_Output", _output.post1);
         post1.Dispatch(0, 1, 1, 1);
 
-        post1.SetTexture(1, "_Scores", scores2RT);
-        post1.SetTexture(1, "_Boxes", boxes2RT);
+        post1.SetBuffer(1, "_Scores", _worker.PeekOutputBuffer("Identity_1"));
+        post1.SetBuffer(1, "_Boxes", _worker.PeekOutputBuffer("Identity_3"));
         post1.SetBuffer(1, "_Output", _output.post1);
         post1.Dispatch(1, 1, 1, 1);
-
-        // Release the temporary render textures.
-        RenderTexture.ReleaseTemporary(scores1RT);
-        RenderTexture.ReleaseTemporary(scores2RT);
-        RenderTexture.ReleaseTemporary(boxes1RT);
-        RenderTexture.ReleaseTemporary(boxes2RT);
 
         // Retrieve the bounding box count.
         GraphicsBuffer.CopyCount(_output.post1, _output.count, 0);

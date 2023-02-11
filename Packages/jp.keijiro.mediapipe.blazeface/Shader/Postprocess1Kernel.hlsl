@@ -7,38 +7,36 @@ void KERNEL_NAME(uint2 id : SV_DispatchThreadID)
     // Scale factor based on the input image size
     float scale = 1 / _ImageSize;
 
-    // Corresponding row number in the input texture
-    uint row0 = (id.y * CELLS_IN_ROW + id.x) * ANCHOR_COUNT;
-
     // Anchor point coordinates
-    float2 anchor = (CELLS_IN_ROW - 0.5 - id) / CELLS_IN_ROW;
+    float2 anchor = (id + 0.5) / CELLS_IN_ROW;
 
-    for (uint ai = 0; ai < ANCHOR_COUNT; ai++)
+    // Array indices
+    uint sidx = (id.y * CELLS_IN_ROW + id.x) * ANCHOR_COUNT;
+    uint bidx = sidx * 16;
+
+    for (uint aidx = 0; aidx < ANCHOR_COUNT; aidx++)
     {
         Detection d;
         d.pad = 0;
 
-        // Row number of this anchor
-        uint row = row0 + ai;
-
         // Confidence score
-        d.score = Sigmoid(_Scores[uint2(0, row)]);
+        d.score = Sigmoid(_Scores[sidx++]);
 
         // Bounding box
-        float x = _Boxes[uint2(0, row)];
-        float y = _Boxes[uint2(1, row)];
-        float w = _Boxes[uint2(2, row)];
-        float h = _Boxes[uint2(3, row)];
+        float x = _Boxes[bidx++];
+        float y = _Boxes[bidx++];
+        float w = _Boxes[bidx++];
+        float h = _Boxes[bidx++];
 
         d.center = VFlip(anchor + float2(x, y) * scale);
         d.extent = float2(w, h) * scale;
 
         // Key points
-        [unroll] for (uint ki = 0; ki < 6; ki++)
+        [unroll] for (uint kidx = 0; kidx < 6; kidx++)
         {
-            float kx = _Boxes[uint2(4 + 2 * ki + 0, row)];
-            float ky = _Boxes[uint2(4 + 2 * ki + 1, row)];
-            d.keyPoints[ki] = VFlip(anchor + float2(kx, ky) * scale);
+            float kx = _Boxes[bidx++];
+            float ky = _Boxes[bidx++];
+            d.keyPoints[kidx] = VFlip(anchor + float2(kx, ky) * scale);
         }
 
         // Thresholding
