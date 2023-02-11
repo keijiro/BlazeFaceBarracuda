@@ -1,7 +1,10 @@
 using Unity.Barracuda;
 using UnityEngine;
+using System;
 
 namespace MediaPipe.BlazeFace {
+
+#region Extension methods
 
 static class IWorkerExtensions
 {
@@ -27,5 +30,41 @@ static class IWorkerExtensions
         return rt;
     }
 }
+
+#endregion
+
+#region GPU to CPU readback helpers
+
+sealed class DetectionCache
+{
+    public DetectionCache(GraphicsBuffer array, GraphicsBuffer count)
+      => _source = (array, count);
+
+    public ReadOnlySpan<Detection> Cached
+      => Read();
+
+    public void Invalidate()
+      => _isCached = false;
+
+    (GraphicsBuffer array, GraphicsBuffer count) _source;
+
+    (Detection[] array, int[] count) _cache
+      = (new Detection[Detection.Max], new int[1]);
+
+    bool _isCached;
+
+    ReadOnlySpan<Detection> Read()
+    {
+        if (!_isCached)
+        {
+            _source.count.GetData(_cache.count, 0, 0, 1);
+            _source.array.GetData(_cache.array, 0, 0, _cache.count[0]);
+            _isCached = true;
+        }
+        return new ReadOnlySpan<Detection>(_cache.array, 0, _cache.count[0]);
+    }
+}
+
+#endregion
 
 } // namespace MediaPipe.BlazeFace
