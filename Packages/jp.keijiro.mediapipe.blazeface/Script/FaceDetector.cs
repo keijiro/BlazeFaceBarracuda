@@ -1,5 +1,7 @@
 using Unity.Barracuda;
 using UnityEngine;
+using Klak.NNUtils;
+using Klak.NNUtils.Extensions;
 
 namespace MediaPipe.BlazeFace {
 
@@ -33,40 +35,25 @@ public sealed partial class FaceDetector : System.IDisposable
     #region Private objects
 
     ResourceSet _resources;
-    IWorker _worker;
-    (Tensor tensor, ComputeTensorData data) _preprocess;
-    (GraphicsBuffer post1, GraphicsBuffer post2, GraphicsBuffer count) _output;
     int _size;
-    DetectionCache _readCache;
+    IWorker _worker;
+    ImagePreprocess _preprocess;
+    (GraphicsBuffer post1, GraphicsBuffer post2, GraphicsBuffer count) _output;
+    CountedBufferReader<Detection> _readCache;
 
     void AllocateObjects(ResourceSet resources)
     {
-        // NN model
-        var model = ModelLoader.Load(resources.model);
-
-        // Private objects
         _resources = resources;
+
+        // NN model
+        var model = ModelLoader.Load(_resources.model);
+        _size = model.inputs[0].GetTensorShape().GetWidth();
+
+        // GPU worker
         _worker = model.CreateWorker(WorkerFactory.Device.GPU);
 
-        // Input shape
-#if BARRACUDA_4_0_0_OR_LATER
-        _size = model.inputs[0].shape[2].value;
-        var inputShape = model.inputs[0].shape.ToTensorShape();
-#else
-        _size = model.inputs[0].shape[6];
-        var inputShape = new TensorShape(model.inputs[0].shape);
-#endif
-
-        // Preprocessing buffers
-#if BARRACUDA_4_0_0_OR_LATER
-        _preprocess.data = new ComputeTensorData(inputShape, "input", false);
-        _preprocess.tensor = TensorFloat.Zeros(inputShape);
-        _preprocess.tensor.AttachToDevice(_preprocess.data);
-#else
-        _preprocess.data = new ComputeTensorData
-          (inputShape, "input", ComputeInfo.ChannelsOrder.NHWC, false);
-        _preprocess.tensor = new Tensor(inputShape, _preprocess.data);
-#endif
+        // Preprocess
+        _preprocess = new ImagePreprocess(_size, _size);
 
         // Output buffers
         _output.post1 = new GraphicsBuffer(GraphicsBuffer.Target.Append, Detection.Max, Detection.Size);
@@ -74,7 +61,7 @@ public sealed partial class FaceDetector : System.IDisposable
         _output.count = new GraphicsBuffer(GraphicsBuffer.Target.Raw, 1, sizeof(uint));
 
         // Detection data read cache
-        _readCache = new DetectionCache(_output.post2, _output.count);
+        _readCache = new CountedBufferReader<Detection>(_output.post2, _output.count, Detection.Max);
     }
 
     void DeallocateObjects()
@@ -82,8 +69,8 @@ public sealed partial class FaceDetector : System.IDisposable
         _worker?.Dispose();
         _worker = null;
 
-        _preprocess.tensor?.Dispose();
-        _preprocess = (null, null);
+        _preprocess?.Dispose();
+        _preprocess = null;
 
         _output.post1?.Dispose();
         _output.post2?.Dispose();
@@ -102,14 +89,10 @@ public sealed partial class FaceDetector : System.IDisposable
         _output.post2.SetCounterValue(0);
 
         // Preprocessing
-        var pre = _resources.preprocess;
-        pre.SetInt("_ImageSize", _size);
-        pre.SetTexture(0, "_Texture", source);
-        pre.SetBuffer(0, "_Tensor", _preprocess.data.buffer);
-        pre.DispatchThreads(0, _size, _size, 1);
+        _preprocess.Dispatch(source, _resources.preprocess);
 
         // Run the BlazeFace model.
-        _worker.Execute(_preprocess.tensor);
+        _worker.Execute(_preprocess.Tensor);
 
         // 1st postprocess (bounding box aggregation)
         var post1 = _resources.postprocess1;
@@ -140,7 +123,7 @@ public sealed partial class FaceDetector : System.IDisposable
         GraphicsBuffer.CopyCount(_output.post2, _output.count, 0);
 
         // Cache data invalidation
-        _readCache.Invalidate();
+        _readCache.InvalidateCache();
     }
 
     #endregion
