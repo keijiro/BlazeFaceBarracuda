@@ -2,7 +2,7 @@
   "author": "Keijiro Takahashi",
   "dependencies": {
     "com.unity.barracuda": "3.0.0",
-    "jp.keijiro.klak.nnutils": "1.0.0"
+    "jp.keijiro.klak.nnutils": "1.1.0"
   },
   "description": "MediaPipe BlazeFace face detection neural network model for Unity Barracuda",
   "displayName": "BlazeFace",

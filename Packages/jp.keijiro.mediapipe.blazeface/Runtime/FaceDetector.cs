@@ -56,9 +56,9 @@ public sealed partial class FaceDetector : System.IDisposable
         _preprocess = new ImagePreprocess(_size, _size);
 
         // Output buffers
-        _output.post1 = new GraphicsBuffer(GraphicsBuffer.Target.Append, Detection.Max, Detection.Size);
-        _output.post2 = new GraphicsBuffer(GraphicsBuffer.Target.Append, Detection.Max, Detection.Size);
-        _output.count = new GraphicsBuffer(GraphicsBuffer.Target.Raw, 1, sizeof(uint));
+        _output.post1 = BufferUtil.NewAppend<Detection>(Detection.Max);
+        _output.post2 = BufferUtil.NewAppend<Detection>(Detection.Max);
+        _output.count = BufferUtil.NewRaw(1);
 
         // Detection data read cache
         _readCache = new CountedBufferReader<Detection>(_output.post2, _output.count, Detection.Max);
